@@ -19,6 +19,7 @@ classdef Class_Methods
         pdf = hist(abs(z),x_axis)/(n*delta_x);
         pdf1 = raylpdf(x_axis, z_sigma);
 
+        figure;
         plot(x_axis,pdf1);
         hold on;
         plot(x_axis,pdf,'r');
