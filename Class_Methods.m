@@ -2,6 +2,62 @@ classdef Class_Methods
     
     methods 
         
+        function [] = Q4(obj,N)
+            
+            b = 2*pi;
+            delta_x = 0.1;
+            a = 0;
+            M = 1; 
+            n = 100000;
+            mp_signal = (b-a)*rand(N,n)+a;
+            Ex = 0;
+            Ey = 0;
+            
+            
+            for i=1:N
+                
+                Ex = Ex + cos(mp_signal(i,:));
+                Ey = Ey + sin(mp_signal(i,:));
+            
+            end
+            
+            E = sqrt((Ex.^2)+(Ey.^2));
+            %E = E./norm(E);
+         
+            histogram(E,'Normalization','probability');
+            
+        end 
+            
+%             
+%             for i = 1:N
+%                 
+%                 phi = (b-a)*rand(M,n)+a;
+%                 
+%                 for k = 1:length(phi)
+%               
+%                     mp_real = cos(phi(k));
+%                     mp_img = sin(phi(k));
+% 
+%                     Ex = mp_real/norm(mp_real);
+%                     Ey = mp_img/norm(mp_real);
+% 
+%                     mp_signal(i,k) = sqrt((Ex.^2)+(Ey.^2));
+%                                         
+%                 end
+%                 
+%                 mp_signal(i,:) = mp_signal(i,:)./norm(mp_signal(i,:));
+%                 
+%             end  
+%             
+%             mp_signal_sum = 0;
+%             
+%             for j = 1:N
+%                 
+%                 mp_signal_sum = mp_signal_sum + mp_signal(j,:);
+%                 
+%             end 
+        
+      
         function [] = Q1(obj, n)
   
         N = 1;
