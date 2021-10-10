@@ -2,6 +2,34 @@ classdef Class_Methods
     
     methods 
         
+        function [] = Q3(obj, n);
+            
+        N = 1;
+        mean = 0;
+        std_dev = sqrt(1); 
+
+        x = std_dev.*randn(N,n)+mean;
+        y = std_dev.*randn(N,n)+mean;
+
+        z = x+i*y;
+        P = (abs(z).^2)/2; %power
+        
+        cdf = cdfplot(P);
+        cdf_x = get(cdf, 'XData');
+        cdf_y = get(cdf, 'YData');
+        
+        figure;
+        semilogy(10*log10(cdf_x), cdf_y)
+        grid on
+        title('Empirical cdf');
+        xlabel('Normalized SNR (dB)');
+        ylabel('Outage Probability');
+        axis([-40 20 0.0001 1]);
+        
+        end
+        
+        
+        
         function [] = Q4(obj,N)
             
             b = 2*pi;
