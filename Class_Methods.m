@@ -28,64 +28,71 @@ classdef Class_Methods
         
         end
         
-        
-        
-        function [] = Q4(obj,N)
+        function [] = Q4(obj,N,n,A)
             
             b = 2*pi;
-            delta_x = 0.1;
             a = 0;
             M = 1; 
-            n = 100000;
-            mp_signal = (b-a)*rand(N,n)+a;
-            Ex = 0;
-            Ey = 0;
-            
+            phase = (b-a)*rand(N,n)+a;
+            Ex = zeros(N,n);
+            Ey = zeros(N,n);
             
             for i=1:N
                 
-                Ex = Ex + cos(mp_signal(i,:));
-                Ey = Ey + sin(mp_signal(i,:));
-            
+                Ex(i,:) = cos(phase(i,:));
+                Ey(i,:) = sin(phase(i,:));
             end
             
-            E = sqrt((Ex.^2)+(Ey.^2));
-            %E = E./norm(E);
-         
-            histogram(E,'Normalization','probability');
+            Ex = A.*Ex;
+            Ey = A.*Ey;
+        
+            for j=1:n
+                Ex(:,j) = Ex(:,j)/norm(Ex(:,j));
+                Ey(:,j) = Ey(:,j)/norm(Ey(:,j));  %normalize each column to sum 1
+            end 
             
+            Ex_total =0;
+            Ey_total =0;
+            
+            for k=1:N
+                Ex_total = Ex_total + Ex(k,:); %sum each multipath component
+                Ey_total = Ey_total + Ey(k,:);
+            end
+           
+                
+            E = sqrt((Ex_total.^2)+(Ey_total.^2));
+            
+          
+            figure;
+            histogram(E, 'Normalization', 'pdf');
+            hold on; 
+            x = 0:0.001:4;
+            y = x.*exp((-x.^(2))/2); %ideal rayleigh distribution
+            plot(x, y, 'r', 'LineWidth', 2);
+            xlabel("x/σ");
+            ylabel("f(x)");
+            legend({'Emperical pdf', 'Theoretical pdf'})
+            hold off;
+            
+            P = (E.^2)/2;
+            
+            figure('Visible','off');
+            cdf = cdfplot(P);
+            cdf_x = get(cdf, 'XData');
+            cdf_y = get(cdf, 'YData');
+
+            figure;
+            semilogy(10*log10(cdf_x), cdf_y)
+            grid on
+            title('Empirical cdf');
+            xlabel('Normalized SNR (dB)');
+            ylabel('Outage Probability');
+            axis([-40 20 0.0001 1]);
+            
+            
+         
         end 
             
-%             
-%             for i = 1:N
-%                 
-%                 phi = (b-a)*rand(M,n)+a;
-%                 
-%                 for k = 1:length(phi)
-%               
-%                     mp_real = cos(phi(k));
-%                     mp_img = sin(phi(k));
-% 
-%                     Ex = mp_real/norm(mp_real);
-%                     Ey = mp_img/norm(mp_real);
-% 
-%                     mp_signal(i,k) = sqrt((Ex.^2)+(Ey.^2));
-%                                         
-%                 end
-%                 
-%                 mp_signal(i,:) = mp_signal(i,:)./norm(mp_signal(i,:));
-%                 
-%             end  
-%             
-%             mp_signal_sum = 0;
-%             
-%             for j = 1:N
-%                 
-%                 mp_signal_sum = mp_signal_sum + mp_signal(j,:);
-%                 
-%             end 
-        
-      
         function [] = Q1(obj, n)
   
         N = 1;
