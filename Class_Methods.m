@@ -2,29 +2,92 @@ classdef Class_Methods
     
     methods 
         
-        function [] = Q3(obj, n);
+        
+        function y = ricepdf(obj,x,v,s);
+            s2 = s.^2; 
+
+        try
+            y = (x ./ s2) .*...
+                exp(-0.5 * (x.^2 + v.^2) ./ s2) .*...
+                besseli(0, x .* v ./ s2);
+            y(x <= 0) = 0;
+        catch
+            error('ricepdf:InputSizeMismatch',...
+                'Non-scalar arguments must match in size.');
+        end
+        
+        end
             
-        N = 1;
-        mean = 0;
-        std_dev = sqrt(1); 
-
-        x = std_dev.*randn(N,n)+mean;
-        y = std_dev.*randn(N,n)+mean;
-
-        z = x+i*y;
-        P = (abs(z).^2)/2; %power
         
-        cdf = cdfplot(P);
-        cdf_x = get(cdf, 'XData');
-        cdf_y = get(cdf, 'YData');
+        function [] = Q6(obj,n,K)
+            
+           
+            LOS_power = sqrt(2*K);
+            
+            variance = 1;
+            sigma = sqrt(variance);
+
+            x = sigma*randn(1,n)+LOS_power;
+            y = sigma*randn(1,n);
+
+
+            z = x+i*y;
+            
+            figure;
+            histogram(abs(z), 'Normalization', 'pdf');
+            P = (abs(z).^2); %power
+            hold on;
+            x = 0:0.01:10;
+            plot(x,obj.ricepdf(x,LOS_power,sigma));
+            legend('Empirical Rice PDF','Theoretical PDF');
+            title('Q6');
+            xlabel("x/σ");
+            ylabel("f(x)");
+            
+
+            figure('Visible','off');
+            cdf = cdfplot(P);
+            cdf_x = get(cdf, 'XData');
+            cdf_y = get(cdf, 'YData');
+
+            figure;
+            semilogy((10*log10(cdf_x/(2*variance*(1+K)))), cdf_y)
+            grid on
+            title('Empirical cdf');
+            xlabel('Normalized SNR (dB)');
+            ylabel('Outage Probability');
+            axis([-40 20 0.0001 1]);
+            
+            
+            %histogram(z)
+
+            
+        end
         
-        figure;
-        semilogy(10*log10(cdf_x), cdf_y)
-        grid on
-        title('Empirical cdf');
-        xlabel('Normalized SNR (dB)');
-        ylabel('Outage Probability');
-        axis([-40 20 0.0001 1]);
+        function [] = Q3(obj, n)
+            
+            N = 1;
+            mean = 0;
+            std_dev = sqrt(1); 
+
+            x = std_dev.*randn(N,n)+mean;
+            y = std_dev.*randn(N,n)+mean;
+
+            z = x+i*y;
+            P = (abs(z).^2)/2; %power
+
+            figure('Visible','off');
+            cdf = cdfplot(P);
+            cdf_x = get(cdf, 'XData');
+            cdf_y = get(cdf, 'YData');
+
+            figure;
+            semilogy(10*log10(cdf_x), cdf_y)
+            grid on
+            title('Empirical cdf');
+            xlabel('Normalized SNR (dB)');
+            ylabel('Outage Probability');
+            axis([-40 20 0.0001 1]);
         
         end
         
@@ -95,30 +158,30 @@ classdef Class_Methods
             
         function [] = Q1(obj, n)
   
-        N = 1;
-        delta_x = 0.1;
-        mean = 0;
-        std_dev = sqrt(1); 
-        x_axis = 0:delta_x:10;
-        z_sigma = 1; %calculated from prelab
+            N = 1;
+            delta_x = 0.1;
+            mean = 0;
+            std_dev = sqrt(1); 
+            x_axis = 0:delta_x:10;
+            z_sigma = 1; %calculated from prelab
 
-        x = std_dev.*randn(N,n)+mean;
-        y = std_dev.*randn(N,n)+mean;
+            x = std_dev.*randn(N,n)+mean;
+            y = std_dev.*randn(N,n)+mean;
 
-        z = x+i*y;
+            z = x+i*y;
 
-        pdf = hist(abs(z),x_axis)/(n*delta_x);
-        pdf1 = raylpdf(x_axis, z_sigma);
+            pdf = hist(abs(z),x_axis)/(n*delta_x);
+            pdf1 = raylpdf(x_axis, z_sigma);
 
-        figure;
-        plot(x_axis,pdf1);
-        hold on;
-        plot(x_axis,pdf,'r');
-        hold off;
-        legend('Ideal R.V. Rayleigh','R.V Z PDF');
-        title('PDF for N = ' + string(n));
-        xlabel('z');
-        ylabel('f(z)');
+            figure;
+            plot(x_axis,pdf1);
+            hold on;
+            plot(x_axis,pdf,'r');
+            hold off;
+            legend('Ideal R.V. Rayleigh','R.V Z PDF');
+            title('PDF for N = ' + string(n));
+            xlabel('z');
+            ylabel('f(z)');
 
         end
         
