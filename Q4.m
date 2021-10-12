@@ -1,8 +1,16 @@
 clear all;
 clc;
 
-N = 10;
 n = 100000;
 class_method = Class_Methods;
-class_method.Q4(N,n,1);
 
+N = 1;
+class_method.Q4(N,n,1,'1');
+N = 2;
+class_method.Q4(N,n,1,'1');
+N = 3;
+class_method.Q4(N,n,1,'1');
+N = 5;
+class_method.Q4(N,n,1,'1');
+N = 10;
+class_method.Q4(N,n,1,'1');

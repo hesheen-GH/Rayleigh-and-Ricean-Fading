@@ -40,7 +40,7 @@ classdef Class_Methods
             x = 0:0.01:10;
             plot(x,obj.ricepdf(x,LOS_power,sigma));
             legend('Empirical Rice PDF','Theoretical PDF');
-            title('Q6');
+            title('Q6 Ricean Distribution with K = ' + string(K));
             xlabel("x/σ");
             ylabel("f(x)");
             
@@ -53,14 +53,12 @@ classdef Class_Methods
             figure;
             semilogy((10*log10(cdf_x/(2*variance*(1+K)))), cdf_y)
             grid on
-            title('Empirical cdf');
+            title('Empirical cdf with K = ' + string(K));
             xlabel('Normalized SNR (dB)');
             ylabel('Outage Probability');
             axis([-40 20 0.0001 1]);
             
-            
-            %histogram(z)
-
+           
             
         end
         
@@ -84,14 +82,14 @@ classdef Class_Methods
             figure;
             semilogy(10*log10(cdf_x), cdf_y)
             grid on
-            title('Empirical cdf');
+            title('Empirical cdf Q3 for n = ' + string(n));
             xlabel('Normalized SNR (dB)');
             ylabel('Outage Probability');
             axis([-40 20 0.0001 1]);
         
         end
         
-        function [] = Q4(obj,N,n,A)
+        function [] = Q4(obj,N,n,A,amp_dist)
             
             b = 2*pi;
             a = 0;
@@ -129,12 +127,13 @@ classdef Class_Methods
             figure;
             histogram(E, 'Normalization', 'pdf');
             hold on; 
-            x = 0:0.001:4;
+            x = 0:0.0001:4;
             y = x.*exp((-x.^(2))/2); %ideal rayleigh distribution
             plot(x, y, 'r', 'LineWidth', 2);
             xlabel("x/σ");
             ylabel("f(x)");
             legend({'Emperical pdf', 'Theoretical pdf'})
+            title('Multipath signal Rayleigh PDF for n = ' + string(n) + ' N = ' + string(N) + ' Amplitude = ' + string(amp_dist));
             hold off;
             
             P = (E.^2)/2;
@@ -147,7 +146,7 @@ classdef Class_Methods
             figure;
             semilogy(10*log10(cdf_x), cdf_y)
             grid on
-            title('Empirical cdf');
+            title('Multipath signal Empirical CDF for n = ' + string(n) + ' N = ' + string(N) + ' Amplitude = ' + string(amp_dist));
             xlabel('Normalized SNR (dB)');
             ylabel('Outage Probability');
             axis([-40 20 0.0001 1]);
@@ -162,7 +161,7 @@ classdef Class_Methods
             delta_x = 0.1;
             mean = 0;
             std_dev = sqrt(1); 
-            x_axis = 0:delta_x:10;
+            x_axis = 0:delta_x:5;
             z_sigma = 1; %calculated from prelab
 
             x = std_dev.*randn(N,n)+mean;
@@ -170,16 +169,16 @@ classdef Class_Methods
 
             z = x+i*y;
 
-            pdf = hist(abs(z),x_axis)/(n*delta_x);
-            pdf1 = raylpdf(x_axis, z_sigma);
-
             figure;
-            plot(x_axis,pdf1);
+            histogram(abs(z),'Normalization', 'pdf');
+            %pdf = hist(abs(z),x_axis)/(n*delta_x);
             hold on;
-            plot(x_axis,pdf,'r');
+            pdf1 = raylpdf(x_axis, z_sigma);
+            plot(x_axis,pdf1);
+            %plot(x_axis,pdf,'r');
             hold off;
-            legend('Ideal R.V. Rayleigh','R.V Z PDF');
-            title('PDF for N = ' + string(n));
+            legend('Experimental Rayleigh dist.','Theoretical Rayleigh dist.');
+            title('PDF for n = ' + string(n));
             xlabel('z');
             ylabel('f(z)');
 
