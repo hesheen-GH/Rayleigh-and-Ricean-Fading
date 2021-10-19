@@ -4,7 +4,7 @@ clc;
 N = 1;
 b = 1;
 a = 0;
-n = 100000;
+n = 1000;
 amplitude = (b-a)*rand(N,n)+a;
 class_method = Class_Methods;
 class_method.Q4(N,n,amplitude,'Uniform(0,1)');

@@ -1,7 +1,7 @@
 clear all;
 clc;
 
-n = 100000;
+n = 1000;
 class_method = Class_Methods;
 
 N = 1;
